@@ -19,7 +19,7 @@ class News(AbstractPost):
 
 
     def __str__(self):
-        return f"News: {self.title} : {self.author}"
+        return f'<news: {self.title} - {self.author}>'
     
     def get_absolute_url(self):
         return reverse("news_detail", kwargs={"pk": self.pk})

@@ -1,6 +1,5 @@
 from django.db.models.expressions import F
-from django.contrib.contenttypes.models import ContentType
-
+from django.apps import apps
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -9,7 +8,7 @@ from rest_framework import permissions
 from apps.blog.models import Blog
 from apps.event.models import Event
 from apps.news.models import News
-from apps.vacancy.models import Vacancy
+from apps.vacancy.models import Vacancy, Employer
 from apps.forum.models import Question, Answer
 
 
@@ -23,6 +22,14 @@ def increment_view(post, request):
 
         post.viewers.add(request.user)
         
+
+
+def get_models():
+    """returns dict of models"""
+    Profile = apps.get_model('account', 'Profile')
+    data = {'blog':Blog, 'event':Event, 'news':News, 'vacancy':Vacancy,
+             'question':Question, 'answer':Answer, 'profile':Profile, 'employer':Employer}
+    return data
 
 
 def get_model_by_appname(app_name:str):

@@ -18,7 +18,7 @@ class Question(AbstractPost):
 
 
     def __str__(self):
-        return f"{self.title[:51]} : {self.author.user_name}"
+        return f"{self.title[:20]} : {self.author.user_name}"
 
 
     def get_absolute_url(self):
@@ -36,7 +36,7 @@ class Answer(AbstractPost):
     comments = models.ForeignKey('forum.Comment', related_name='for_answers', on_delete = models.DO_NOTHING, blank=True, null=True)
 
     def __str__(self):
-        return f"Answer {self.author} to {self.question.title}"
+        return f"<answer: {self.author} to '{self.question.title}'>"
 
     def get_absolute_url(self):
         return reverse('answer_detail', kwargs = {'pk':self.question.id,'a_pk': self.pk})

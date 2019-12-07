@@ -16,7 +16,7 @@ class Employer(models.Model):
 
 
     def __str__(self):
-        return f"{self.name}"
+        return f'<employer: emp name - {self.added_by}>'
 
 
 class Vacancy(AbstractPost):
@@ -39,7 +39,7 @@ class Vacancy(AbstractPost):
         verbose_name = 'vacancy'
         verbose_name_plural = 'vacancies'
     def __str__(self):
-        return f'{self.title} - {self.author}'
+        return f'<vacancy: {self.title} - {self.author}>'
 
 
 class Comment(AbstractComment):

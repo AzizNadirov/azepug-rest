@@ -23,7 +23,7 @@ class Event(AbstractPost):
         return reverse('event_detail', kwargs = {'pk': self.pk})
 
     def __str__(self):
-        return f"[{self.title}]{self.author.user_name}"
+        return  f'<event: {self.title} - {self.author}>'
 
 
 class Comment(AbstractComment):

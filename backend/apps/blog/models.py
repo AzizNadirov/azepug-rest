@@ -20,7 +20,7 @@ class Blog(AbstractPost):
 
 
     def __str__(self):
-        return self.title
+        return f'<blog: test_title - {self.author}>'
 
 
 class Comment(AbstractComment):
