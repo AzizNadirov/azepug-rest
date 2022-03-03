@@ -15,11 +15,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'taggit',
+
+    'apps.base',
     'apps.blog',
     'apps.news',
     'apps.event',
     'apps.vacancy',
     'apps.account',
+    'apps.forum',
 ]
 
 MIDDLEWARE = [
@@ -87,4 +92,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'src', 'media')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'account.Profile'
