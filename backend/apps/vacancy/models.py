@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
+
 
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from apps.base.models import  AbstractComment, AbstractPost
+from apps.base.models import Comment, AbstractPost
 
 
 
@@ -25,8 +27,9 @@ class Vacancy(AbstractPost):
     contact = models.CharField( "Contact" ,max_length=128)
     min_salary = models.PositiveIntegerField("Min salary")
     tags = TaggableManager()
-    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_vacancy", blank = True, null = True)
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_vacancy")
     like_count = models.IntegerField(default=0)
+    comments = GenericRelation(Comment, related_query_name = 'vacancy')
 
 
     def get_absolute_url(self):
@@ -37,11 +40,3 @@ class Vacancy(AbstractPost):
         verbose_name_plural = 'vacancies'
     def __str__(self):
         return f'{self.title} - {self.author}'
-
-
-class Comment(AbstractComment):
-    vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='comments')
-    author = models.ForeignKey(settings.AUTH_USER_MODEL,verbose_name='müəllif', related_name = 'v_comments', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'Comment {self.author} to {self.vacancy}'

@@ -2,18 +2,10 @@ from django.db import models
 from django.urls import reverse
 from django.conf import settings
 from taggit.managers import TaggableManager
+from django.contrib.contenttypes.fields import GenericRelation
 
+from apps.base.models import Comment, AbstractPost
 
-from apps.base.models import AbstractComment, AbstractPost
-
-
-class Comment(AbstractComment):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='müəllif', related_name = 'f_comments', 
-        null = True, on_delete=models.SET_NULL)
-    answer = models.ForeignKey('Answer', related_name = 'comments', on_delete = models.CASCADE)
-
-    def __str__(self):
-         return f'Comment {self.author} to answer: {self.answer}'
 
 
 class Question(AbstractPost):
@@ -41,6 +33,7 @@ class Answer(AbstractPost):
     supports_count = models.IntegerField(default=0)
     last_edited = models.DateTimeField(auto_now = True)
     title = None
+    comments = GenericRelation(Comment, related_query_name = 'answer')
 
     def __str__(self):
         return f"Answer {self.author} to {self.question.title}"

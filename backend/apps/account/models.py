@@ -9,7 +9,7 @@ from django.urls.base import reverse
 from core.settings import MEDIA_ROOT
 
 from apps.event.models import Event
-from apps.blog.models import Post
+from apps.blog.models import Blog
 from apps.news.models import News
 from apps.forum.models import Question
 from apps.vacancy.models import Vacancy
@@ -90,12 +90,12 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
 
 class Treasure(models.Model):
-    profile = models.OneToOneField(Profile, on_delete = models.CASCADE, blank = True, null = True)
-    blog = models.ManyToManyField(Post, related_name = 'treasure', blank = True, null = True)
-    event = models.ManyToManyField(Event, related_name = 'treasure', blank = True, null = True)
+    profile = models.OneToOneField(Profile, on_delete = models.CASCADE)
+    blog = models.ManyToManyField(Blog, related_name = 'treasure')
+    event = models.ManyToManyField(Event, related_name = 'treasure')
     news = models.ManyToManyField(News, related_name = 'treasure')
-    question = models.ManyToManyField(Question, related_name = 'treasure', blank = True, null = True)
-    vacancy = models.ManyToManyField(Vacancy, related_name = 'treasure', blank = True, null = True)
+    question = models.ManyToManyField(Question, related_name = 'treasure')
+    vacancy = models.ManyToManyField(Vacancy, related_name = 'treasure')
 
     def __str__(self):
         return f"{self.profile.user_name}'s Treasure"
