@@ -19,7 +19,7 @@ class Event(AbstractPost):
     tags = TaggableManager()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_event")
     like_count = models.IntegerField(default=0)
-    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="in_events")
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="in_events", blank = True)
     comments = GenericRelation(Comment, related_query_name = 'event')
 
     def get_absolute_url(self):

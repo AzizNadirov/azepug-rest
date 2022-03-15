@@ -27,7 +27,7 @@ class Comment(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    body = models.TextField('Şərh')
+    body = models.TextField()
     created_at = models.DateTimeField('Yaradılma tarixi',auto_now_add = True)
     updated = models.DateTimeField('Yenilənmə tariix', auto_now = True)
     active = models.BooleanField('Aktiv', default = True)
@@ -36,4 +36,4 @@ class Comment(models.Model):
         ordering = ('-created_at',)
 
     def __str__(self):
-         return f'Comment {self.author} to: {self.post}'
+         return f'Comment {self.author} to: {self.content_type}'
