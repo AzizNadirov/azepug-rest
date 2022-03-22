@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 
 from apps.base.permissions import IsOwnerOrReadOnly
+from apps.base.views import increment_view
 
 from .serializers import BlogDetailSerializer, BlogListSerializer
 from .models import Blog
@@ -19,13 +20,10 @@ class BlogListAPIView(generics.ListCreateAPIView):
 
 
 class BlogDetailAPIView(APIView):
-    # permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = BlogDetailSerializer
     queryset = Blog.published.all()
-
-    class Meta:
-        extra_kwargs = {'like_count':{"read_only":True}, 'views': {'read_only': True}}
 
     def user_is_author(self, request, user):
         return request.user == user
@@ -33,7 +31,7 @@ class BlogDetailAPIView(APIView):
     def get(self, request, pk):
         blog = get_object_or_404(Blog, id = pk)
         serializer = BlogDetailSerializer(blog, many = False)
-        print('*'*50,serializer.data, '*'*50)
+        increment_view(blog, request)
         return Response(serializer.data)
 
     def delete(self, request, pk):

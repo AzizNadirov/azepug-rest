@@ -14,15 +14,11 @@ class EventListSerializer(serializers.ModelSerializer):
         exclude = ['views', 'likes', 'like_count', 'date_created']
 
 class EventDetailSerializer(serializers.ModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(read_only = True)
-    # comments = serializers.SerializerMethodField()
+    author = MiniProfileSerializer()
     comments = CommentSerializer(many = True)
-
-
-    def get_author(self, obj):
-        return obj.author.user_name
 
     class Meta:
         model = Event
         fields = ['author' ,'title', 'content', 'date_created', 'like_count', 'views', 'drafted', 'comments'] 
+        read_only_fields = ['date_created', 'views', 'author', 'like_count']
 

@@ -15,6 +15,9 @@ urlpatterns = [
 
     path('blogs/', include('apps.blog.urls')),
     path('events/', include('apps.event.urls')),
+    path('news/', include('apps.news.urls')),
+    path('vacancies/', include('apps.vacancy.urls')),
+    path('qs/', include('apps.forum.urls')),
 
     path('register/', AccountCreateView.as_view(), name = 'register'),
 

@@ -8,11 +8,11 @@ from django.db.models.signals import post_save
 from django.urls.base import reverse
 from core.settings import MEDIA_ROOT
 
-from apps.event.models import Event
-from apps.blog.models import Blog
-from apps.news.models import News
-from apps.forum.models import Question
-from apps.vacancy.models import Vacancy
+# from apps.event.models import Event
+# from apps.blog.models import Blog
+# from apps.news.models import News
+# from apps.forum.models import Question
+# from apps.vacancy.models import Vacancy
 
 
 def photo_upload(instance, filename):
@@ -63,7 +63,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default = True)
     is_active = models.BooleanField(default = True)
     objects = ProfileManager()
-    # treasure = models.OneToOneField('Treasure', on_delete = models.CASCADE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['user_name', 'first_name']
@@ -90,12 +89,12 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
 
 class Treasure(models.Model):
-    profile = models.OneToOneField(Profile, on_delete = models.CASCADE)
-    blog = models.ManyToManyField(Blog, related_name = 'treasure')
-    event = models.ManyToManyField(Event, related_name = 'treasure')
-    news = models.ManyToManyField(News, related_name = 'treasure')
-    question = models.ManyToManyField(Question, related_name = 'treasure')
-    vacancy = models.ManyToManyField(Vacancy, related_name = 'treasure')
+    profile = models.OneToOneField(Profile, on_delete = models.CASCADE, related_name='treasure')
+    blog = models.ManyToManyField('blog.Blog', related_name = 'treasure')
+    event = models.ManyToManyField('event.Event', related_name = 'treasure')
+    news = models.ManyToManyField('news.News', related_name = 'treasure')
+    question = models.ManyToManyField('forum.Question', related_name = 'treasure')
+    vacancy = models.ManyToManyField('vacancy.Vacancy', related_name = 'treasure')
 
     def __str__(self):
         return f"{self.profile.user_name}'s Treasure"

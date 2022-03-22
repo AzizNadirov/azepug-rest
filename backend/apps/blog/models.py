@@ -1,12 +1,10 @@
 from django.db import models
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
-
 from django.urls import reverse
-from apps.base.models import AbstractPost, Comment
+
+from apps.base.models import AbstractPost, AbstractComment
 from taggit.managers import TaggableManager
-
-
+from apps.base.models import AbstractComment
 
 
 
@@ -23,7 +21,7 @@ class Blog(AbstractPost):
     like_count = models.IntegerField(default=0)
     objects = models.Manager()
     published = PublishedManager()
-    comments = GenericRelation(Comment, related_query_name = 'blogs')
+    comments = models.ForeignKey('blog.Comment', related_name='for_blogs', on_delete = models.DO_NOTHING, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('detail-blog', kwargs = {'pk': self.pk})
@@ -33,4 +31,7 @@ class Blog(AbstractPost):
         return self.title
 
 
+class Comment(AbstractComment):
+    author = models.ForeignKey('account.Profile', related_name='blog_comments', on_delete = models.SET_NULL, null=True, blank=True)
+    likers = models.ManyToManyField('account.Profile', related_name='liked_blog_comments', blank=True)
 

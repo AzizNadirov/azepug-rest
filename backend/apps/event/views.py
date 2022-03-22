@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 
 from apps.base.permissions import IsOwnerOrReadOnly
+from apps.base.views import increment_view
 
 from .serializers import EventDetailSerializer, EventListSerializer
 from .models import Event
@@ -19,13 +20,11 @@ class EventListAPIView(generics.ListCreateAPIView):
 
 
 class EventDetailAPIView(APIView):
-    # permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = EventDetailSerializer
     queryset = Event.objects.all()
 
-    class Meta:
-        extra_kwargs = {'like_count':{"read_only":True}, 'views': {'read_only': True}}
 
     def user_is_author(self, request, user):
         return request.user == user
@@ -33,6 +32,7 @@ class EventDetailAPIView(APIView):
     def get(self, request, pk):
         event = get_object_or_404(Event, id = pk)
         serializer = EventDetailSerializer(event, many = False)
+        increment_view(event, request)
         return Response(serializer.data)
 
     def delete(self, request, pk):
