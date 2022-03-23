@@ -8,19 +8,11 @@ from apps.base.models import AbstractComment
 
 
 
-class PublishedManager(models.Manager):
-    def get_queryset(self):
-        return super(PublishedManager,self).get_queryset().filter(drafted = False)
-    
-
-
 class Blog(AbstractPost):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name= "Müəllif", related_name="blogs", on_delete=models.CASCADE)
     tags = TaggableManager()
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="liked_blog")
     like_count = models.IntegerField(default=0)
-    objects = models.Manager()
-    published = PublishedManager()
     comments = models.ForeignKey('blog.Comment', related_name='for_blogs', on_delete = models.DO_NOTHING, blank=True, null=True)
 
     def get_absolute_url(self):

@@ -4,7 +4,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 
-
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super(PublishedManager,self).get_queryset().filter(drafted = False)
 
 class AbstractPost(models.Model):
     title = models.CharField("Title", max_length = 128)
@@ -13,7 +15,8 @@ class AbstractPost(models.Model):
     drafted = models.BooleanField(verbose_name="drafted", default = False)
     viewers = models.ManyToManyField('account.Profile', blank = True, default = None)
     views = models.IntegerField(verbose_name="views", default=0)
-
+    published = PublishedManager()
+    objects = models.Manager()
     class Meta:
         abstract = True
         ordering = ('-date_created',)
