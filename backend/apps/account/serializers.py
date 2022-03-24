@@ -1,5 +1,4 @@
 from dataclasses import fields
-from pyexpat import model
 from rest_framework import serializers
 
 from .models import Profile
@@ -26,6 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['email', 'user_name', 'first_name', 'surname', 'start_date', 'image', 'about', 'contacts']
+        read_only_fields = ['start_date', 'user_name']
     
 class MiniProfileSerializer(serializers.ModelSerializer):
 

@@ -8,11 +8,6 @@ from django.db.models.signals import post_save
 from django.urls.base import reverse
 from core.settings import MEDIA_ROOT
 
-# from apps.event.models import Event
-# from apps.blog.models import Blog
-# from apps.news.models import News
-# from apps.forum.models import Question
-# from apps.vacancy.models import Vacancy
 
 
 def photo_upload(instance, filename):
@@ -31,6 +26,9 @@ class Contacts(models.Model):
     linkedin = models.URLField(null = True)
     phone = models.CharField(null = True, max_length=20)
 
+    def __str__(self):
+        return f"{self.profile.user_name}'s contacts."
+
 
 
 class ProfileManager(BaseUserManager):
@@ -45,7 +43,7 @@ class ProfileManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email = email, user_name=user_name, first_name = first_name, **kwargs)
         user.set_password(password)
-        ## do some validations
+        user.contacts.email = email
         user.save()
         return user
 
@@ -59,7 +57,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     image = models.ImageField(upload_to=photo_upload, default = 'profile_pics/default_avatar.jpg',
             null=True, blank = True)
     about = models.TextField(max_length=1024, blank = True, null = True)
-    contacts = models.ManyToManyField(Contacts, related_name='profiles')
+    contacts = models.OneToOneField(Contacts, related_name='profile', on_delete=models.SET_NULL, null = True, blank=True)
     is_staff = models.BooleanField(default = True)
     is_active = models.BooleanField(default = True)
     objects = ProfileManager()
