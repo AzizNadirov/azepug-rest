@@ -21,6 +21,7 @@ def photo_upload(instance, filename):
 
 
 class Contacts(models.Model):
+    profile = models.OneToOneField('Profile', on_delete = models.CASCADE, related_name='contacts')
     email = models.EmailField(null = True)
     github = models.URLField(null = True)
     linkedin = models.URLField(null = True)
@@ -43,7 +44,6 @@ class ProfileManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email = email, user_name=user_name, first_name = first_name, **kwargs)
         user.set_password(password)
-        user.contacts.email = email
         user.save()
         return user
 
@@ -57,7 +57,6 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     image = models.ImageField(upload_to=photo_upload, default = 'profile_pics/default_avatar.jpg',
             null=True, blank = True)
     about = models.TextField(max_length=1024, blank = True, null = True)
-    contacts = models.OneToOneField(Contacts, related_name='profile', on_delete=models.SET_NULL, null = True, blank=True)
     is_staff = models.BooleanField(default = True)
     is_active = models.BooleanField(default = True)
     objects = ProfileManager()
@@ -98,8 +97,12 @@ class Treasure(models.Model):
         return f"{self.profile.user_name}'s Treasure"
 
 
-def create_treasure(sender, instance, created, **kwargs):
+def create_treasure_and_contacts(sender, instance, created, **kwargs):
     if created:
         Treasure.objects.create(profile = instance)
+        Contacts.objects.create(profile = instance)
+        instance.contacts.email = instance.email
+        instance.save()
+        instance.contacts.save()
 
-post_save.connect(create_treasure, sender = Profile)
+post_save.connect(create_treasure_and_contacts, sender = Profile)

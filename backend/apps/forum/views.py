@@ -15,18 +15,15 @@ from .models import Answer, Question
 
 class QuestionListAPIView(generics.ListCreateAPIView):
     serializer_class = QuestionListSerializer
-    queryset = Question.objects.all()
+    queryset = Question.published.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def perform_create(self, serializer):
-        serializer.save(author = self.request.user)
 
 
 class QuestionDetailAPIView(APIView):
     permission_classes = [IsOwnerOrReadOnly]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = QuestionDetailSerializer
-    queryset = Question.objects.all()
+    queryset = Question.published.all()
 
     def user_is_author(self, request, user):
         return request.user == user
@@ -48,7 +45,7 @@ class QuestionDetailAPIView(APIView):
     def put(self, request, pk):
         question = get_object_or_404(Question, id = pk)
         if self.user_is_author(request, question.author):
-            serializer = AnswerDetailSerializer(question, request.data, many = False)
+            serializer = QuestionDetailSerializer(question, request.data, many = False)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

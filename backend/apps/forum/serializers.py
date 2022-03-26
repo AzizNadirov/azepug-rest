@@ -8,7 +8,7 @@ from apps.account.serializers import MiniProfileSerializer
 
 
 class QuestionListSerializer(serializers.ModelSerializer):
-    author = MiniProfileSerializer()
+    author = MiniProfileSerializer(write_only = True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Question
         fields = ['author', 'title', 'content', 'date_created', 'views', 'supports_count', 'drafted', 'closed'] 
@@ -17,7 +17,7 @@ class QuestionListSerializer(serializers.ModelSerializer):
 
 
 class AnswerListSerializer(serializers.ModelSerializer):
-    author = MiniProfileSerializer()
+    author = MiniProfileSerializer(write_only = True, default=serializers.CurrentUserDefault())
         
     class Meta:
         model = Answer
@@ -26,26 +26,27 @@ class AnswerListSerializer(serializers.ModelSerializer):
 
 class QuestionDetailSerializerMini(serializers.ModelSerializer):
     """ Serializes only author, title and content """
-    author = MiniProfileSerializer()
+    author = MiniProfileSerializer(write_only = True, default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Question
         fields = ['author', 'title', 'content'] 
     
 class QuestionDetailSerializer(serializers.ModelSerializer):
-    author = MiniProfileSerializer()
+    author = MiniProfileSerializer(write_only = True, default=serializers.CurrentUserDefault())
     answers = AnswerListSerializer(many = True)
 
     class Meta:
         model = Question
         fields = ['author', 'title', 'content', 'date_created', 'views', 'supports_count', 'drafted', 'closed', 'answers']
+        read_only_fields = ['date_created', 'views', 'supports_count']
 
 
 class AnswerDetailSerializer(serializers.ModelSerializer):
-    author = MiniProfileSerializer()
+    author = MiniProfileSerializer(write_only = True, default=serializers.CurrentUserDefault())
     question = QuestionDetailSerializerMini()
-    # comments = CommentSerializer(many = True)
+    comments = CommentSerializer(many = True)
 
     class Meta:
         model = Answer
-        fields = ['question', 'author', 'content', 'date_created', 'views', 'supports_count', 'drafted'] 
+        fields = ['question', 'author', 'content', 'date_created', 'views', 'supports_count', 'drafted', 'comments'] 

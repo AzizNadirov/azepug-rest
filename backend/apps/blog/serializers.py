@@ -8,8 +8,8 @@ class BlogListSerializer(serializers.ModelSerializer):
     author = MiniProfileSerializer()
     class Meta:
         model = Blog
-        exclude = ['views', 'likes', 'like_count', 'date_created']
-        read_only_fields = ['date_created', 'views', 'author', 'like_count']
+        fields = ['title', 'content', 'like_count', 'author']
+        read_only_fields = ['views', 'author', 'like_count']
 
 
 

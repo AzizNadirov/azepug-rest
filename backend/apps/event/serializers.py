@@ -11,7 +11,7 @@ class EventListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        exclude = ['views', 'likes', 'like_count', 'date_created']
+        fields = ['title', 'content', 'like_count', 'author']
 
 class EventDetailSerializer(serializers.ModelSerializer):
     author = MiniProfileSerializer()

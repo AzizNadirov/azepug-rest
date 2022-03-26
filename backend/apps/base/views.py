@@ -71,7 +71,7 @@ class LikeView(APIView):
 class SupportView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def increment_support(self, app_name, pk, decrement = False):
-        """ support incerementer """
+        """ support incerements / decrements support count """
         post = get_model_by_appname(app_name).objects.get(pk = pk)
         if not decrement:
             post.supports_count = F('supports_count') + 1
