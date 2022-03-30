@@ -104,7 +104,8 @@ class TestCreateModel(APITestCase):
         Answer = self.models['answer']
         Question = self.models['question']
         date_time = timezone.now()
-        Question.objects.create(title = 'test_title', content='test_content', author = self.user_1, date_created = date_time)
+        Question.objects.create(title = 'test_title', content='test_content', 
+                                author = self.user_1, date_created = date_time)
         self.assertEqual(Question.objects.all().count(), 1)
         question = Question.published.get(id=1)
         self.assertEqual(question.author, self.user_1)
