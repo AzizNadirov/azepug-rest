@@ -16,7 +16,7 @@ from .models import News
 
 class NewsListAPIView(generics.ListCreateAPIView):
     serializer_class = NewsListSerializer
-    queryset = News.objects.all()
+    queryset = News.published.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 

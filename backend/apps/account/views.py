@@ -1,3 +1,4 @@
+from functools import partial
 from django.shortcuts import get_object_or_404
 from django.apps import apps
 
@@ -7,7 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from apps.base.permissions import IsOwnerOrReadOnly
+from apps.base.permissions import IsOwnerOrReadOnly, UserIsHimselfOrRO
 
 from .serializers import RegisterUserSerializer, ProfileSerializer
 
@@ -48,7 +49,7 @@ class AccountCreateView(APIView):
 class DetailUpdateDestroyUserAPI(RetrieveUpdateDestroyAPIView):
     Profile = apps.get_model('account', 'Profile')
     serializer_class = ProfileSerializer
-    permisson_classes = [IsOwnerOrReadOnly]
+    permisson_classes = [UserIsHimselfOrRO]
     lookup_field = 'user_name'
 
     def get_queryset(self):
@@ -61,10 +62,10 @@ class DetailUpdateDestroyUserAPI(RetrieveUpdateDestroyAPIView):
         data = {'profile': profile, 'recents': recents}
         return Response(data=data, status=status.HTTP_200_OK)
 
-    def put(self, request, user_name):
-        data = ProfileSerializer(request.user, data=request.data)
+    def patch(self, request, user_name):
+        data = ProfileSerializer(request.user, data=request.data, partial = True)
         if data.is_valid():
             data.save()
-            return Response(ProfileSerializer(request.user), status = status.HTTP_200_OK)
+            return Response(ProfileSerializer(request.user).data, status = status.HTTP_200_OK)
         else:
             return Response(data.errors, status = status.HTTP_400_BAD_REQUEST)

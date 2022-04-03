@@ -19,7 +19,6 @@ def increment_view(post, request):
         post.views = F('views') + 1
         post.save()
         post.refresh_from_db()
-
         post.viewers.add(request.user)
         
 
@@ -47,7 +46,7 @@ def get_model_by_appname(app_name:str):
 class LikeView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def increment_like(self, app_name, pk, decrement = False):
-        """ like incerementer """
+        """ like incerementer/decrementer """
         post = get_model_by_appname(app_name).objects.get(pk = pk)
         if not decrement:
             print('\n-----Like Incrementer--------------\n')
@@ -57,6 +56,7 @@ class LikeView(APIView):
             post.like_count = F('like_count') - 1
         post.save()
         post.refresh_from_db()
+        print('++++', post.like_count)
     
     def post(self, request, pk):
         app_name  = request.POST.get('app_name')
