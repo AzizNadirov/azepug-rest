@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.urls import reverse
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import Token
 from rest_framework.test import APITestCase
 
 from apps.base.views import get_models
@@ -26,7 +26,12 @@ class TestPostActions(APITestCase):
             surname = 'Don2',
             about = 'test about2'
         )
+        self.token_u1 = Token.for_user(self.user1)
+        self.token_u2 = Token.for_user(self.user2)
         self.assertEqual(Profile.objects.count(), 2)
+
+    def api_authentication(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token_u1.access_token}")
 
     def test_blog_likeSave(self):
         Blog = self.models['blog']
@@ -34,7 +39,6 @@ class TestPostActions(APITestCase):
         url = reverse('blog-list')
         data = {'title':'test_title', 'content':'test_content', 'author':self.user1}
         self.client.post(url, data)
-        # Blog.objects.create(title = 'test_title', content='test_content', author = self.user1, date_created = date_time)
 
         self.assertEqual(Blog.objects.all().count(), 1)
         blog = Blog.published.get(id=1)
@@ -43,8 +47,6 @@ class TestPostActions(APITestCase):
         self.assertEqual(blog.content, 'test_content')
         self.assertEqual(str(blog), f'<blog: test_title - {self.user1}>')
 
-        token = RefreshToken.for_user(self.user2)
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {token.access_token}")
         # like
         self.assertEqual(blog.like_count, 0)
         self.assertEqual(blog.views, 0)
@@ -204,5 +206,3 @@ class TestPostActions(APITestCase):
     #     response = self.client.get(url)
     #     self.assertEqual(response.status_code, 200)
     #     # self.assertEqual(news.views, 1)          # the same increments view just once 
-
- 

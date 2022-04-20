@@ -25,7 +25,7 @@ class BlogDetailAPIView(APIView):
     serializer_class = BlogDetailSerializer
     queryset = Blog.published.all()
 
-    def user_is_author(self, request, user):
+    def zuser_is_author(self, request, user):
         return request.user == user
 
     def get(self, request, pk):
