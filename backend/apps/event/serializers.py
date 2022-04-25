@@ -18,13 +18,15 @@ class EventListSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         print('%'*50, validated_data)
         Event = apps.get_model('event', 'Event')
+        Employer = apps.get_model('vacancy', 'Employer')
+        employer = Employer.objects.get(pk = validated_data['organiser'])
         author = self.context['request'].user
         instance = Event.objects.create( author = author, 
                                         title = validated_data['title'],
                                         content = validated_data['content'],
                                         starts_at = validated_data['starts_at'],
                                         ends_at = validated_data['ends_at'],
-                                        organiser = validated_data['organiser'])
+                                        organiser = employer)
         return instance
 
     class Meta:
