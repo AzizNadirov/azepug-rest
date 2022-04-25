@@ -14,8 +14,6 @@ from .models import Vacancy, Employer
 
 
 
-
-
 class ListCreateEmployerView(generics.ListCreateAPIView):
     serializer_class = EmployerSerializer
     queryset = Employer.objects.all()

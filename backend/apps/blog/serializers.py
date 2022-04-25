@@ -11,7 +11,6 @@ from apps.account.serializers import MiniProfileSerializer
 class BlogListSerializer(serializers.ModelSerializer):
     author = MiniProfileSerializer(default=serializers.CurrentUserDefault())
     def create(self, validated_data):
-        Profile = apps.get_model('account', 'Profile')
         Blog = apps.get_model('blog', 'Blog')
         author = self.context['request'].user
         instance = Blog.objects.create( author = author, 

@@ -16,12 +16,18 @@ from .models import Event
 class EventListAPIView(generics.ListCreateAPIView):
     serializer_class = EventListSerializer
     queryset = Event.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
 
+    def create(self, request):
+        serializer = EventListSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class EventDetailAPIView(APIView):
     permission_classes = [IsOwnerOrReadOnly]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = EventDetailSerializer
     queryset = Event.objects.all()
 
@@ -53,4 +59,3 @@ class EventDetailAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status = status.HTTP_403_FORBIDDEN) 
-

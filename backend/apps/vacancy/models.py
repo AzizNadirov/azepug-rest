@@ -9,7 +9,6 @@ from apps.base.models import AbstractPost, AbstractComment
 
 
 class Employer(models.Model):
-    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null = True)
     name = models.CharField( "Name" ,max_length=128)
     workers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name = "works_at", verbose_name = "workers", blank = True)
     founded_at = models.DateField("Date created", null = True, blank = True)
