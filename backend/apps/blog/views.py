@@ -18,14 +18,20 @@ class BlogListAPIView(generics.ListCreateAPIView):
     queryset = Blog.published.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def create(self, request):
+        serializer = BlogListSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class BlogDetailAPIView(APIView):
     permission_classes = [IsOwnerOrReadOnly]
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = BlogDetailSerializer
     queryset = Blog.published.all()
 
-    def zuser_is_author(self, request, user):
+    def user_is_author(self, request, user):
         return request.user == user
 
     def get(self, request, pk):

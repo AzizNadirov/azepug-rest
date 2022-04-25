@@ -1,6 +1,6 @@
 asgiref==3.5.0
 attrs==21.4.0
-backports.zoneinfo==0.2.1
+# backports.zoneinfo==0.2.1
 coverage==6.3.2
 crispy-bootstrap5==0.6
 Django==4.0.1
