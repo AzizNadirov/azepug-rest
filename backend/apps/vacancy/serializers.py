@@ -16,6 +16,7 @@ class EmployerSerializer(serializers.ModelSerializer):
 class VacancyListSerializer(serializers.ModelSerializer):
     author = MiniProfileSerializer()
     employer = EmployerSerializer()
+    
     class Meta:
         model = Vacancy
         exclude = ['views', 'likes', 'like_count', 'date_created']
